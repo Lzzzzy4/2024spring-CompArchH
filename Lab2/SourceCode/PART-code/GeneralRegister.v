@@ -51,8 +51,10 @@ module RegisterFile(
     end
 
     // read data changes when address changes
-    assign reg1 = (addr1 == 5'b0) ? 32'h0 : reg_file[addr1];
-    assign reg2 = (addr2 == 5'b0) ? 32'h0 : reg_file[addr2];
+    // assign reg1 = (addr1 == 5'b0) ? 32'h0 : (addr1 == wb_addr && write_en) ? wb_data : reg_file[addr1];
+    // assign reg2 = (addr2 == 5'b0) ? 32'h0 : (addr2 == wb_addr && write_en) ? wb_data : reg_file[addr2];
+    assign reg1 = (addr1 == 5'h0) ? 32'h0 : reg_file[addr1];
+    assign reg2 = (addr2 == 5'h0) ? 32'h0 : reg_file[addr2];
 
 
 

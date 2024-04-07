@@ -45,6 +45,7 @@ module ControllerDecoder(
 
     wire [6:0] opcode, funct7;
     wire [2:0] funct3;
+    reg [31:0]test;
 
     assign opcode = inst[6:0];
     assign funct7 = inst[31:25];
@@ -66,6 +67,7 @@ module ControllerDecoder(
         CSR_write_en = 0;
         CSR_zimm_or_reg = 0;
         if (opcode == `U_LUI) begin
+            test = 32'd1;
             jal = 0;
             jalr = 0;
             op1_src = 0;
@@ -82,6 +84,7 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `U_AUIPC) begin
+            test = 32'd2;
             jal = 0;
             jalr = 0;
             op1_src = `PC_4;
@@ -98,6 +101,7 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `J_JAL) begin
+            test = 32'd3;
             jal = 1;
             jalr = 0;
             op1_src = 0;
@@ -114,11 +118,12 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `J_JALR) begin
+            test = 32'd4;
             jal = 0;
             jalr = 1;
-            op1_src = `PC_4;
-            op2_src = 0;
-            ALU_func = `OP1;
+            op1_src = `REG1;
+            op2_src = `IMM;
+            ALU_func = `ADD;
             br_type = 0;
             load_npc = 1;
             wb_select = 0;
@@ -130,12 +135,18 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `B_TYPE) begin
+            test = 32'd5;
             jal = 0;
             jalr = 0;
             op1_src = `REG1;
             op2_src = `REG2;
             ALU_func = 0;
-            br_type = funct3;
+            if (funct3 == 3'b000) br_type = `BEQ;
+            else if (funct3 == 3'b001) br_type = `BNE;
+            else if (funct3 == 3'b100) br_type = `BLT;
+            else if (funct3 == 3'b101) br_type = `BGE;
+            else if (funct3 == 3'b110) br_type = `BLTU;
+            else if (funct3 == 3'b111) br_type = `BGEU;
             load_npc = 0;
             wb_select = 0;
             load_type = 0;
@@ -146,6 +157,7 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `I_LOAD) begin
+            test = 32'd6;
             jal = 0;
             jalr = 0;
             op1_src = 0;
@@ -183,6 +195,7 @@ module ControllerDecoder(
 
         /* FIXM: Write your code here... */
         else if (opcode == `I_ARI) begin
+            test = 32'd7;
             jal = 0;
             jalr = 0;
             op1_src = `REG1;
@@ -195,8 +208,8 @@ module ControllerDecoder(
             else if (funct3 == `I_ANDI)     ALU_func = `AND;
             else if (funct3 == `I_SLLI)     ALU_func = `SLL;
             else if (funct3 == `I_SR) begin
-                if (funct7 == `I_SRAI)      ALU_func = `SRA
-                else if (funct7 == `I_SRLI) ALU_func = `SRL
+                if (funct7 == `I_SRAI)      ALU_func = `SRA;
+                else if (funct7 == `I_SRLI) ALU_func = `SRL;
             end
             br_type = 0;
             load_npc = 0;
@@ -209,6 +222,7 @@ module ControllerDecoder(
             CSR_zimm_or_reg = 0;
         end
         else if (opcode == `S_TYPE) begin
+            test = 32'd8;
             jal = 0;
             jalr = 0;
             op1_src = `REG1;
@@ -226,7 +240,38 @@ module ControllerDecoder(
             CSR_write_en = 0;
             CSR_zimm_or_reg = 0;
         end
+        else if (opcode == `R_TYPE) begin
+            test = 32'd9;
+            jal = 0;
+            jalr = 0;
+            op1_src = `REG1;
+            op2_src = `REG2;
+            if (funct3 == `R_AS) begin
+                if (funct7 == `R_ADD) ALU_func = `ADD;
+                else if (funct7 == `R_SUB) ALU_func = `SUB;
+            end
+            else if (funct3 == `R_SLL)     ALU_func = `SLL;
+            else if (funct3 == `R_SLT)     ALU_func = `SLT;
+            else if (funct3 == `R_SLTU)    ALU_func = `SLTU;
+            else if (funct3 == `R_XOR)     ALU_func = `XOR;
+            else if (funct3 == `R_SR) begin
+                if (funct7 == `R_SRL)      ALU_func = `SRL;
+                else if (funct7 == `R_SRA) ALU_func = `SRA;
+            end
+            else if (funct3 == `R_OR)      ALU_func = `OR;
+            else if (funct3 == `R_AND)     ALU_func = `AND;
+            br_type = 0;
+            load_npc = 0;
+            wb_select = 0;
+            load_type = 0;
+            reg_write_en = 1;
+            cache_write_en = 0;
+            imm_type = `RTYPE;
+            CSR_write_en = 0;
+            CSR_zimm_or_reg = 0;
+        end
         else if (opcode == `I_CSR) begin
+            test = 32'd10;
             // `define I_CSRRC 3'b011
             // `define I_CSRRCI 3'b111
             // `define I_CSRRS 3'b010
@@ -249,7 +294,8 @@ module ControllerDecoder(
             // CSR_zimm_or_reg = 1; //将csr_zimm的值传给op1
             CSR_zimm_or_reg = funct3[2];
         end
-        begin
+        else begin
+            test = 32'd11;
             jal = 0;
             jalr = 0;
             op1_src = 0;

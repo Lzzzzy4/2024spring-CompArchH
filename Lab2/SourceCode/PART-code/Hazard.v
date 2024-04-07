@@ -113,7 +113,7 @@ module HarzardUnit(
         else if (jal) begin
             flushD = 1;
         end
-        else if (((reg1_srcD == reg_dstE  && reg1_srcD != 0) || (reg2_srcD == reg_dstE  && reg1_srcD != 0)) && wb_select && reg_write_en_EX) begin
+        else if (((reg1_srcD == reg_dstE  && reg1_srcD != 0) || (reg2_srcD == reg_dstE  && reg2_srcD != 0))  && wb_select ) begin //&& reg_write_en_EX
             flushE = 1;
             bubbleF = 1;
             bubbleD = 1;

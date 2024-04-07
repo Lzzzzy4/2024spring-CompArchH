@@ -140,7 +140,7 @@ module RV32ICore(
         .clk(CPU_CLK),
         .bubbleD(bubbleD),
         .flushD(flushD),
-        .PC_IF(PC_4),
+        .PC_IF(PC_4), //??
         .PC_ID(PC_ID)
     );
 
