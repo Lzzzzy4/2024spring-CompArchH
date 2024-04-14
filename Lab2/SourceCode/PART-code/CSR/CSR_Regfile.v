@@ -15,7 +15,7 @@ module CSR_Regfile(
     // TODO: Complete this module
 
     /* FIXM: Write your code here... */
-    reg [31:0] csr [4095:0];
+    reg [31:0] csr [127:0];
 
     integer i;
     initial
@@ -24,7 +24,7 @@ module CSR_Regfile(
             csr[i][31:0] <= 32'b0;
     end
 
-    always@(negedge clk or posedge rst) 
+    always@(posedge clk or posedge rst) 
     begin 
         if (rst)
             for (i = 0; i < 4096; i = i + 1) 

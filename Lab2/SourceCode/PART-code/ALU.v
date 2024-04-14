@@ -38,6 +38,7 @@ module ALU(
             `OP1: ALU_out = op1;
             `OP2: ALU_out = op2;
             `NAND: ALU_out = ~(op1 & op2);
+            `CSRRC: ALU_out = ~(op1) & op2;
 
             /* FIXM: Write your code here... */
 

@@ -5,8 +5,8 @@
 //              !!! ALL YOU NEED TO CHANGE IS 4 FILE PATH BELOW !!!	
 //				(they are all optional, you can run cpu without change paths here,if files are failed to open, we will not dump the content to .txt and will not try to initial your bram)
 
-`define DataCacheContentLoadPath "D:/git/2024spring-CompArchH/Lab2/Simulation/3testAll.data"                 //Modify to path/to/your/testdata
-`define InstCacheContentLoadPath "D:/git/2024spring-CompArchH/Lab2/Simulation/3testAll.inst"                 //Modify to path/to/your/testdata
+`define DataCacheContentLoadPath "D:/git/2024spring-CompArchH/Lab2/Simulation/CSRtest.data"                 //Modify to path/to/your/testdata
+`define InstCacheContentLoadPath "D:/git/2024spring-CompArchH/Lab2/Simulation/CSRtest.inst"                 //Modify to path/to/your/testdata
 `define DataCacheContentSavePath "D:/git/2024spring-CompArchH/Lab2/Simulation/DumpDataCacheContent.txt"      //Modify to path/to/your/testdata
 `define InstCacheContentSavePath "D:/git/2024spring-CompArchH/Lab2/Simulation/DumpInstCacheContent.txt"      //Modify to path/to/your/testdata
 `define BRAMWORDS 4096  //a word is 32bit, so our bram is 4096*32bit
@@ -118,47 +118,47 @@ module testBench(
         #400000 												// waiting for instruction Execution to End
         $display("Finish Instruction Execution!"); 
         
-        $display("Saving DataCache Content to file..."); 
-        CPU_Debug_DataCache_A2 = 32'hfffffffc;
-        #10
-        SaveDataCacheFile = $fopen(`DataCacheContentSavePath,"w");
-        if(SaveDataCacheFile==0)
-            $display("Failed to Open %s, Do Not Save DataCache values to file!",`DataCacheContentSavePath);
-        else
-        begin
-            $fwrite(SaveDataCacheFile,"i\tAddr\tAddr\tData\tData\n");
-            #10
-            for(i=0;i<`BRAMWORDS;i=i+1)
-                begin
-                @(posedge CPU_CLK);
-                CPU_Debug_DataCache_A2 = CPU_Debug_DataCache_A2+4;
-                @(posedge CPU_CLK);
-                @(negedge CPU_CLK);
-                $fwrite(SaveDataCacheFile,"%4d\t%8h\t%4d\t%8h\t%4d\n",i,CPU_Debug_DataCache_A2,CPU_Debug_DataCache_A2,CPU_Debug_DataCache_RD2,CPU_Debug_DataCache_RD2);
-                end
-            $fclose(SaveDataCacheFile);
-        end
+        // $display("Saving DataCache Content to file..."); 
+        // CPU_Debug_DataCache_A2 = 32'hfffffffc;
+        // #10
+        // SaveDataCacheFile = $fopen(`DataCacheContentSavePath,"w");
+        // if(SaveDataCacheFile==0)
+        //     $display("Failed to Open %s, Do Not Save DataCache values to file!",`DataCacheContentSavePath);
+        // else
+        // begin
+        //     $fwrite(SaveDataCacheFile,"i\tAddr\tAddr\tData\tData\n");
+        //     #10
+        //     for(i=0;i<`BRAMWORDS;i=i+1)
+        //         begin
+        //         @(posedge CPU_CLK);
+        //         CPU_Debug_DataCache_A2 = CPU_Debug_DataCache_A2+4;
+        //         @(posedge CPU_CLK);
+        //         @(negedge CPU_CLK);
+        //         $fwrite(SaveDataCacheFile,"%4d\t%8h\t%4d\t%8h\t%4d\n",i,CPU_Debug_DataCache_A2,CPU_Debug_DataCache_A2,CPU_Debug_DataCache_RD2,CPU_Debug_DataCache_RD2);
+        //         end
+        //     $fclose(SaveDataCacheFile);
+        // end
         
-        $display("Saving InstCache Content to file..."); 
-        SaveInstCacheFile = $fopen(`InstCacheContentSavePath,"w");
-        if(SaveInstCacheFile==0)
-            $display("Failed to Open %s, Do Not Save InstCache values to file!",`InstCacheContentSavePath);
-        else
-        begin
-            CPU_Debug_InstCache_A2 = 32'hfffffffc;
-            #10
-            $fwrite(SaveInstCacheFile,"i\tAddr\tAddr\tData\tData\n");
-            #10
-            for(i=0;i<`BRAMWORDS;i=i+1)
-                begin
-                @(posedge CPU_CLK);
-                CPU_Debug_InstCache_A2 = CPU_Debug_InstCache_A2+4;
-                @(posedge CPU_CLK);
-                @(negedge CPU_CLK);
-                $fwrite(SaveInstCacheFile,"%4d\t%8h\t%4d\t%8h\t%4d\n",i,CPU_Debug_InstCache_A2,CPU_Debug_InstCache_A2,CPU_Debug_InstCache_RD2,CPU_Debug_InstCache_RD2);
-                end
-            $fclose(SaveInstCacheFile);      
-        end      
+        // $display("Saving InstCache Content to file..."); 
+        // SaveInstCacheFile = $fopen(`InstCacheContentSavePath,"w");
+        // if(SaveInstCacheFile==0)
+        //     $display("Failed to Open %s, Do Not Save InstCache values to file!",`InstCacheContentSavePath);
+        // else
+        // begin
+        //     CPU_Debug_InstCache_A2 = 32'hfffffffc;
+        //     #10
+        //     $fwrite(SaveInstCacheFile,"i\tAddr\tAddr\tData\tData\n");
+        //     #10
+        //     for(i=0;i<`BRAMWORDS;i=i+1)
+        //         begin
+        //         @(posedge CPU_CLK);
+        //         CPU_Debug_InstCache_A2 = CPU_Debug_InstCache_A2+4;
+        //         @(posedge CPU_CLK);
+        //         @(negedge CPU_CLK);
+        //         $fwrite(SaveInstCacheFile,"%4d\t%8h\t%4d\t%8h\t%4d\n",i,CPU_Debug_InstCache_A2,CPU_Debug_InstCache_A2,CPU_Debug_InstCache_RD2,CPU_Debug_InstCache_RD2);
+        //         end
+        //     $fclose(SaveInstCacheFile);      
+        // end      
 
         $display("Simulation Ended!"); 
         $stop();

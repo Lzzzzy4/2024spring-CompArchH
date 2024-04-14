@@ -278,11 +278,14 @@ module ControllerDecoder(
             // `define I_CSRRSI 3'b110
             // `define I_CSRRW 3'b001
             // `define I_CSRRWI 3'b101
+            if (funct3 == 3'b011 || funct3 == 3'b111) ALU_func = `CSRRC;
+            else if (funct3 == 3'b010 || funct3 == 3'b110) ALU_func = `OR;
+            else if (funct3 == 3'b001 || funct3 == 3'b101) ALU_func = `OP1;
             jal = 0;
             jalr = 0;
-            op1_src = `REG1;
-            op2_src = 0;
-            ALU_func = 0;
+            op1_src = 0; // reg or imm
+            op2_src = 0; // csr data
+            // ALU_func = 0;
             br_type = 0;
             load_npc = 0;
             wb_select = 0; //选alu出即可
