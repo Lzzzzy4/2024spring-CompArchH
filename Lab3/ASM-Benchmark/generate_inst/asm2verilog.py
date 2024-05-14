@@ -68,7 +68,7 @@ else:
         return b[6:8] + b[4:6] + b[2:4] + b[0:2]
         return b[6:8] + b[4:6] + b[2:4] + b[0:2]
 
-    with open(OUTPUT, 'w') as f:
+    with open(OUTPUT, 'w', encoding = 'utf-8') as f:
         f.write(verilog_head % (INPUT,))
         for i in range(0, len(s), 8):
             instr_string = str(byte_wise_reverse(s[i:i+8]))

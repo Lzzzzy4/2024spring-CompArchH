@@ -37,9 +37,17 @@ module WB_Data_WB(
     wire [31:0] data_raw;
     wire [31:0] data_WB_raw;
 
+    wire rd_req;
+    assign rd_req = write_en[1];
+    wire wr_req;
+    assign wr_req = write_en[0];
+
+    // wire [3:0] new_en;
+    // assign new_en = wr_req ? 4'hf : 0;
+
     // DataCache DataCache1(
     //     .clk(clk),
-    //     .write_en(write_en << addr[1:0]),
+    //     .write_en(new_en << addr[1:0]),
     //     .debug_write_en(debug_write_en),
     //     .addr(addr[31:2]),
     //     .debug_addr(debug_addr[31:2]),
@@ -48,11 +56,6 @@ module WB_Data_WB(
     //     .out_data(data_raw),
     //     .debug_out_data(debug_out_data)
     // );
-
-    wire rd_req;
-    assign rd_req = write_en[1];
-    wire wr_req;
-    assign wr_req = write_en[0];
 
     cache DataCache2(
         .clk(clk),

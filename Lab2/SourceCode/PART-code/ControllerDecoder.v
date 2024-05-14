@@ -51,6 +51,13 @@ module ControllerDecoder(
     assign funct7 = inst[31:25];
     assign funct3 = inst[14:12];
 
+    wire [4:0] rs1;
+    assign rs1 = inst[19:15];
+    wire [4:0] rs2;
+    assign rs2 = inst[24:20];
+    wire [4:0] rd;
+    assign rd = inst[11:7];
+
     always @ (*) begin
         jal = 0;
         jalr = 0;

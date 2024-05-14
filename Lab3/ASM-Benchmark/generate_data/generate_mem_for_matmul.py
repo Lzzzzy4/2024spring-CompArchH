@@ -28,7 +28,7 @@ always @ (posedge clk)
     if(wr_req) 
         ram_cell[addr] <= wr_data;
 
-initial begin'''
+initial begin\n'''
 
 verilog_tail = '''end
 
@@ -38,7 +38,8 @@ endmodule
 import sys
 from random import randint
 
-if len(sys.argv) != 2:
+# if len(sys.argv) != 2:
+if 0:
     print('    Usage:\n        python generate_mem_for_matmul.py [matrix size]')
     print('    Example:\n        python generate_mem_for_matmul.py 16')
     print('    Tip: use this command to write to file:\n        python generate_mem_for_matmul.py 16 > mem.sv')
@@ -51,37 +52,38 @@ else:
     if N<=1:
         print('    *** Error: parameter must be larger than 1, not %d' % (N, ) )
         sys.exit(-1)
+    with open('mem.sv', 'w', encoding='utf-8') as f:
+        f.write(verilog_head)
+        # print(verilog_head)
 
-    print(verilog_head)
-    
-    A, B, C = [], [], []
-    for i in range(N):
-        Aline, Bline, Cline = [], [], []
-        for j in range(N):
-            Aline.append( randint(0,0xffffffff) )
-            Bline.append( randint(0,0xffffffff) )
-            Cline.append( 0 )
-        A.append(Aline)
-        B.append(Bline)
-        C.append(Cline)
-    
-    for i in range(N):
-        for j in range(N):
-            for k in range(N):
-                C[i][j] += A[i][k] & B[k][j]
-    
-    print('    // dst matrix C')
-    for i in range(N):
-        for j in range(N):
-            print("    ram_cell[%8d] = 32'h0;  // 32'h%08x;" % ( N*i+j, C[i][j] & 0xffffffff, ) )
-    print('    // src matrix A')
-    for i in range(N):
-        for j in range(N):
-            print("    ram_cell[%8d] = 32'h%08x;" % (   N*N+N*i+j, A[i][j], ) )
-    print('    // src matrix B')
-    for i in range(N):
-        for j in range(N):
-            print("    ram_cell[%8d] = 32'h%08x;" % ( 2*N*N+N*i+j, B[i][j], ) )
-    
-    print(verilog_tail)
+        A, B, C = [], [], []
+        for i in range(N):
+            Aline, Bline, Cline = [], [], []
+            for j in range(N):
+                Aline.append( randint(0,0xffffffff) )
+                Bline.append( randint(0,0xffffffff) )
+                Cline.append( 0 )
+            A.append(Aline)
+            B.append(Bline)
+            C.append(Cline)
+
+        for i in range(N):
+            for j in range(N):
+                for k in range(N):
+                    C[i][j] += A[i][k] & B[k][j]
+
+        f.write('    // dst matrix C\n')
+        for i in range(N):
+            for j in range(N):
+                f.write("    ram_cell[%8d] = 32'h0;  // 32'h%08x;\n" % ( N*i+j, C[i][j] & 0xffffffff, ) )
+        f.write('    // src matrix A\n')
+        for i in range(N):
+            for j in range(N):
+                f.write("    ram_cell[%8d] = 32'h%08x;\n" % (   N*N+N*i+j, A[i][j], ) )
+        f.write('    // src matrix B\n')
+        for i in range(N):
+            for j in range(N):
+                f.write("    ram_cell[%8d] = 32'h%08x;\n" % ( 2*N*N+N*i+j, B[i][j], ) )
+
+        f.write(verilog_tail)
 

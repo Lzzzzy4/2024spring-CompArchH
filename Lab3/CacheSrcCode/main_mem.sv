@@ -23,7 +23,7 @@ wire [31:0] mem_rd_data;
 
 mem #(
     .ADDR_LEN  ( ADDR_LEN + LINE_ADDR_LEN    )
-) mem_inst (
+) mem_data (
     .clk       (  clk           ),
     .rst       (  rst           ),
     .addr      (  mem_addr      ),

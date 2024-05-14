@@ -22,7 +22,7 @@ main:
     slli   t0, t0, 2
     slli   t1, t1, 2
 Loop:
-    lw     t2, (t1)
+    lw     t6, (t1)
     addi   t1, t1, 4
     blt    t1, t0, Loop
 infinity_loop:

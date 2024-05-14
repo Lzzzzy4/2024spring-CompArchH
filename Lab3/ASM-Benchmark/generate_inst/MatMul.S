@@ -57,7 +57,7 @@ _start:
     slli   t0, t0, 2
     addi   t1, zero, 0
 Loop:
-    lw     t2, (t1)
+    lw     t6, (t1)
     addi   t1, t1, 4
     blt    t1, t0, Loop
 InfLoop:

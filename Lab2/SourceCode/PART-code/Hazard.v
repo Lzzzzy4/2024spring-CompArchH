@@ -112,7 +112,8 @@ module HarzardUnit(
             bubbleD = 1;
             bubbleE = 1;
             bubbleM = 1;
-            flushW = 1;
+            bubbleW = 1;
+            // flushW = 1;
         end
         else if (br || jalr) begin
             flushD = 1;

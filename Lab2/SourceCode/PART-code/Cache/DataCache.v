@@ -40,7 +40,18 @@ module DataCache(
         out_data = 32'h0;
         debug_out_data = 32'h0;
         // you can add simulation instructions here
-        data_cache[0] = 32'h0;
+        data_cache[       0] = 32'h00000009;
+        data_cache[       1] = 32'h0000000b;
+        data_cache[       2] = 32'h00000003;
+        data_cache[       3] = 32'h00000000;
+        data_cache[       4] = 32'h00000007;
+        data_cache[       5] = 32'h00000001;
+        data_cache[       6] = 32'h00000008;
+        data_cache[       7] = 32'h00000004;
+        data_cache[       8] = 32'h00000002;
+        data_cache[       9] = 32'h00000005;
+        data_cache[      10] = 32'h00000006;
+        data_cache[      11] = 32'h0000000a;
         // ......
     end
 

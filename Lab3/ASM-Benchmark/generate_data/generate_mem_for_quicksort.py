@@ -28,7 +28,7 @@ always @ (posedge clk)
     if(wr_req) 
         ram_cell[addr] <= wr_data;
 
-initial begin'''
+initial begin\n'''
 
 verilog_tail = '''end
 
@@ -38,7 +38,8 @@ endmodule
 import sys
 from random import shuffle
 
-if len(sys.argv) != 2:
+# if len(sys.argv) != 2:
+if 0:
     print('    Usage:\n        python generate_mem_for_quicksort.py [matrix size]')
     print('    Example:\n        python generate_mem_for_quicksort.py 16')
     print('    Tip: use this command to write to file:\n        python generate_mem_for_quicksort.py 16 > mem.sv')
@@ -52,12 +53,13 @@ else:
         print('    *** Error: parameter must be larger than 2, not %d' % (N, ) )
         sys.exit(-1)
 
-    print(verilog_head)
-    
-    lst = list(range(N))
-    shuffle(lst)
-    for i in range(N):
-        print("    ram_cell[%8d] = 32'h%08x;" % ( i, lst[i], ) )
-    
-    print(verilog_tail)
+    with open('mem.sv', 'w', encoding='utf-8') as f:
+        f.write(verilog_head)
+
+        lst = list(range(N))
+        shuffle(lst)
+        for i in range(N):
+            f.write("    ram_cell[%8d] = 32'h%08x;\n" % ( i, lst[i], ) )
+
+        f.write(verilog_tail)
 
