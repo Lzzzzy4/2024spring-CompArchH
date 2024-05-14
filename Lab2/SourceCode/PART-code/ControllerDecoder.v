@@ -168,7 +168,8 @@ module ControllerDecoder(
             wb_select = 1;
             
             reg_write_en = 1;
-            cache_write_en = 0;
+            // cache_write_en = 0;
+            cache_write_en = 4'b0010; // means cache read
             imm_type = `ITYPE;
             CSR_write_en = 0;
             CSR_zimm_or_reg = 0;
@@ -233,9 +234,12 @@ module ControllerDecoder(
             wb_select = 0;
             load_type = 0;
             reg_write_en = 0;
-            if (funct3 == `S_SB) cache_write_en = 4'b0001;
-            else if (funct3 == `S_SH) cache_write_en = 4'b0011;
-            else if (funct3 == `S_SW) cache_write_en = 4'b1111;
+
+            // if (funct3 == `S_SB) cache_write_en = 4'b0001;
+            // else if (funct3 == `S_SH) cache_write_en = 4'b0011;
+            // else if (funct3 == `S_SW) cache_write_en = 4'b1111;
+            cache_write_en = 4'b0001; // means cache write
+
             imm_type = `STYPE;
             CSR_write_en = 0;
             CSR_zimm_or_reg = 0;

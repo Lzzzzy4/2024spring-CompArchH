@@ -21,13 +21,15 @@
     // 无需修改
 
 module WB_Data_WB(
-    input wire clk, bubbleW, flushW,
+    input wire clk, bubbleW, flushW, rst,
     input wire wb_select,
     input wire [2:0] load_type,
     input  [3:0] write_en, debug_write_en,
     input  [31:0] addr,
     input  [31:0] debug_addr,
     input  [31:0] in_data, debug_in_data,
+    // input wire rd_req, wr_req,
+    output wire miss,
     output wire [31:0] debug_out_data,
     output wire [31:0] data_WB
     );
@@ -35,16 +37,32 @@ module WB_Data_WB(
     wire [31:0] data_raw;
     wire [31:0] data_WB_raw;
 
-    DataCache DataCache1(
+    // DataCache DataCache1(
+    //     .clk(clk),
+    //     .write_en(write_en << addr[1:0]),
+    //     .debug_write_en(debug_write_en),
+    //     .addr(addr[31:2]),
+    //     .debug_addr(debug_addr[31:2]),
+    //     .in_data(in_data << (8 * addr[1:0])),
+    //     .debug_in_data(debug_in_data),
+    //     .out_data(data_raw),
+    //     .debug_out_data(debug_out_data)
+    // );
+
+    wire rd_req;
+    assign rd_req = write_en[1];
+    wire wr_req;
+    assign wr_req = write_en[0];
+
+    cache DataCache2(
         .clk(clk),
-        .write_en(write_en << addr[1:0]),
-        .debug_write_en(debug_write_en),
-        .addr(addr[31:2]),
-        .debug_addr(debug_addr[31:2]),
-        .in_data(in_data << (8 * addr[1:0])),
-        .debug_in_data(debug_in_data),
-        .out_data(data_raw),
-        .debug_out_data(debug_out_data)
+        .rst(rst),
+        .miss(miss),
+        .addr(addr),
+        .rd_req(rd_req),
+        .wr_req(wr_req),
+        .rd_data(data_raw),
+        .wr_data(in_data)
     );
 
     // Add flush and bubble support

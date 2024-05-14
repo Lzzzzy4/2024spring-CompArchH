@@ -375,8 +375,11 @@ module RV32ICore(
     // ---------------------------------------------
 
 
+    wire dcache_miss;
+    // wire rd_req, wr_req;
     WB_Data_WB WB_Data_WB1(
         .clk(CPU_CLK),
+        .rst(CPU_RST),
         .bubbleW(bubbleW),
         .flushW(flushW),
         .wb_select(wb_select_MEM),
@@ -387,6 +390,9 @@ module RV32ICore(
         .debug_addr(CPU_Debug_DataCache_A2),
         .in_data(reg2_MEM),
         .debug_in_data(CPU_Debug_DataCache_WD2),
+        // .rd_req(rd_req),
+        // .wr_req(wr_req),
+        .miss(dcache_miss),
         .debug_out_data(CPU_Debug_DataCache_RD2),
         .data_WB(data_WB)
     );
@@ -435,6 +441,7 @@ module RV32ICore(
         .wb_select(wb_select_EX),
         .reg_write_en_MEM(reg_write_en_MEM),
         .reg_write_en_WB(reg_write_en_WB),
+        .dcache_miss(dcache_miss),
         .flushF(flushF),
         .bubbleF(bubbleF),
         .flushD(flushD),

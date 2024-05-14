@@ -39,6 +39,7 @@ module HarzardUnit(
     input wire [4:0] reg1_srcD, reg2_srcD, reg1_srcE, reg2_srcE, reg_dstE, reg_dstM, reg_dstW,
     input wire br, jalr, jal,
     input wire wb_select,
+    input wire dcache_miss,
     input wire reg_write_en_MEM,
     input wire reg_write_en_WB,
     output reg flushF, bubbleF, flushD, bubbleD, flushE, bubbleE, flushM, bubbleM, flushW, bubbleW,
@@ -105,6 +106,13 @@ module HarzardUnit(
             flushE  = 1;
             flushM  = 1;
             flushW  = 1;
+        end
+        else if (dcache_miss) begin
+            bubbleF = 1;
+            bubbleD = 1;
+            bubbleE = 1;
+            bubbleM = 1;
+            flushW = 1;
         end
         else if (br || jalr) begin
             flushD = 1;
