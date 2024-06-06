@@ -109,16 +109,32 @@ module RV32ICore(
     // PC-Generator
     // ---------------------------------------------
 
-
+    wire is_branch;
+    assign is_branch = |br_type_EX;
+    wire br_for_harzard;
     NPC_Generator NPC_Generator1(
-        .PC(PC_4),
+        .clk(CPU_CLK),
+        .rst(CPU_RST),
+        .pc_ex(PC_EX - 4),
+        .pc_id(PC_ID - 4),
+        .is_branch(is_branch),
+
+        .bubbleF(bubbleF),
+        .flushF(flushF),
+        .bubbleD(bubbleD),
+        .bubbleE(bubbleE),
+        .flushD(flushD),
+        .flushE(flushE),
+
+        .PC(PC_IF),
         .jal_target(jal_target),
         .jalr_target(ALU_out),
         .br_target(br_target),
         .jal(jal),
         .jalr(jalr_EX),
         .br(br),
-        .NPC(NPC)
+        .NPC(NPC),
+        .br_for_harzard(br_for_harzard)
     );
 
 
@@ -435,7 +451,7 @@ module RV32ICore(
         .reg_dstE(reg_dest_EX),
         .reg_dstM(reg_dest_MEM),
         .reg_dstW(reg_dest_WB),
-        .br(br),
+        .br(br_for_harzard),
         .jalr(jalr_EX),
         .jal(jal),
         .wb_select(wb_select_EX),
